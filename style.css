@@ -44,6 +44,9 @@ body {
 button {
 	flex: 1;
 	margin: 3px;
-	width: auto;
-	height: auto;
+}
+
+.productName {
+	font-size: 20px;
+	font-style: italic;
 }

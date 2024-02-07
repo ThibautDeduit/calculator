@@ -1,4 +1,5 @@
-let displayVal = 0
+let savedNumber = ""
+let newNumber = "0"
 let operator = ""
 
 function startCalculator() {
@@ -12,61 +13,78 @@ function startCalculator() {
 				button.addEventListener("click", pressDecimal)
 				break
 			case "add":
-				button.addEventListener("click", pressAdd)
-				break
 			case "subtract":
-				button.addEventListener("click", pressSubtract)
-				break
 			case "multiply":
-				button.addEventListener("click", pressMultiply)
-				break
 			case "divide":
-				button.addEventListener("click", pressDivide)
-				break
 			case "equal":
-				button.addEventListener("click", pressEqual)
+				button.addEventListener("click", pressOperator)
+				break
+			case "clear":
+				button.addEventListener("click", pressClear)
 				break
 		}
 	}	
 }
 
-
 function pressDigit(e) {
 	let digit = e.target.textContent
-	displayVal += digit
-	updateDisplay()
-}
-
-function pressAdd() {
-	displayVal += "+"
-	updateDisplay()
-}
-
-function pressEqual() {
-	displayVal = "Error: noMath"
-	updateDisplay()
+	if (!newNumber || newNumber == "0") {
+		newNumber = digit
+	} else {
+		newNumber += digit
+	}
+	displayNumber(newNumber)
 }
 
 function pressDecimal() {
-	displayVal += "."
-	updateDisplay()
-}
-function pressSubtract() {
-	displayVal += "-"
-	updateDisplay()
-}
-function pressMultiply() {
-	displayVal += "*"
-	updateDisplay()
-}
-function pressDivide() {
-	displayVal += "/"
-	updateDisplay()
+	if (!newNumber) newNumber = "0."
+	else if (!newNumber.includes(".")) newNumber += "."
+	displayNumber(newNumber)
 }
 
-function updateDisplay() {
-	let display = document.querySelector(".display")
-	display.textContent = displayVal
+function pressOperator(e) {
+	executePendingOperation()
+	operator = e.target.textContent
+	if (operator == "=") operator = ""
+	displayNumber(savedNumber)
+}
+
+function pressClear() {
+	operator = ""
+	savedNumber = ""
+	newNumber = "0"
+	displayNumber(newNumber)
+}
+
+function executePendingOperation() {
+	if (newNumber) {
+		if (operator) newNumber = getResult(operator)
+		saveNumber()
+	}
+}
+
+function getResult(operator) {
+	if (operator == "+") {
+		return parseFloat((parseFloat(savedNumber) + parseFloat(newNumber)).toFixed(10))
+	} else if (operator == "-") {
+		return parseFloat((parseFloat(savedNumber) - parseFloat(newNumber)).toFixed(10))
+	} else if (operator == "*") {
+		return parseFloat(savedNumber) * parseFloat(newNumber)
+	} else if (operator == "/") {
+		if (newNumber == "0") return "noobError"
+		return parseFloat(savedNumber) / parseFloat(newNumber)
+	}
+}
+
+function saveNumber() {
+		savedNumber = newNumber
+		newNumber = ""
+}
+
+function displayNumber(num) {
+	let display = document.querySelector(".display p")
+	display.textContent = num
+	console.log(newNumber)
 }
 
 startCalculator()
